@@ -1,18 +1,16 @@
 class PostCommentsController < ApplicationController
 
- def new
+  def new
    @post_image = PostImege.new
- end 
+  end 
 
   def create
-    @post_image = PostImage.new(post_image_params)
-    @post_image.user_id = current_user.id
-    @post_image.save
-    redirect_to post_images_path
+    post_image = PostImage.find(params[:post_image_id])
+    comment = current_user.post_comments.new(post_comment_params)
+    comment.post_image_id = post_image.id
+    comment.save
+    redirect_to post_image_path(post_image)
   end
-  
-  
-  
   
   def destroy
     PostComment.find(params[:id]).destroy
@@ -21,8 +19,8 @@ class PostCommentsController < ApplicationController
 
   private
 
-  def post_image_params
-    params.require(:post_image).permit(:shop_name, :image, :caption)
+  def post_comment_params
+    params.require(:post_comment).permit(:comment)
   end
   
 end
